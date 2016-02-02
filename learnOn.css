@@ -1,1 +1,63 @@
 /* CSS declarations go here */
+
+#content {
+    float:left;
+    width:620px;
+}
+
+#sidebar {
+    float:left;
+    width:340px;
+}
+
+#footer {
+    clear:both;
+}
+
+/*
+body{
+    margin:0px;
+
+}
+
+#header{
+    background-color: blue;
+    width:100%;
+    height:100px;
+
+}
+
+#panLeft{
+    background-color:orange;
+
+}
+
+#panRight{
+    background-color:red;
+
+}
+
+#panLeftMedia{
+
+
+}
+
+#panLeftContent{
+
+
+}
+
+#panRightMod1{
+
+
+}
+
+#panRightMod2{
+
+
+}
+
+#panRight3{
+
+
+}*/
