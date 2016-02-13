@@ -5,25 +5,34 @@
 
 <body>
 
-<div class="nav-bar">
-    <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Login</a></li>
-    </ul>
-</div>
-
 
 <div id="header">
-  header content here
-    {{> loginButtons}}
+    <div class="nav-bar">
+        <h2 style="color:white;padding: 0px;margin: 0px;margin-left: 25px;">LearnOn</h2>
+        <div id="navWrap">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li>{{> loginButtons}}</li>
+                <li><a id='addNewContent'>Add New Content</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="topicName">
+
+    </div>
 </div>
 <div id="canvas">
     <div id="panLeft">
+        <div id="topicVideo">
 
+        </div>
+        <div id="topicContent">
+
+        </div>
     </div>
 
     <div id="panRight">
-      sidebar content here
+     <p>Content buttons for developement</p> <br> <!--Until grid is built -->
     </div>
 
     <div id="footer">

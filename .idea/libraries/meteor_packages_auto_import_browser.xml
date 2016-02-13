@@ -250,6 +250,7 @@
       <root url="file://$USER_HOME$/.meteor/packages/ddp-client/1.2.1/web.browser/stream_client_common.js" />
       <root url="file://$USER_HOME$/.meteor/packages/ddp-client/1.2.1/web.browser/livedata_connection.js" />
     </CLASSES>
+    <JAVADOC />
     <SOURCES />
   </library>
 </component>
