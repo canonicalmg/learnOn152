@@ -32,7 +32,15 @@
     </div>
 
     <div id="panRight">
-     <p>Content buttons for developement</p> <br> <!--Until grid is built -->
+        <div class="contentButtons">
+            <p>Content buttons for development</p> <br> <!--Until grid is built -->
+        </div>
+        <hr>
+        <div class="contentRanks">
+            {{#each subjects}}
+                {{> rank}}
+            {{/each}}
+        </div>
     </div>
 
     <div id="footer">
@@ -45,3 +53,10 @@
   <button>Click Me</button>
   <p>You've pressed the button {{counter}} times.</p>
 </template> -->
+
+<template name="rank">
+    <div class="rank">
+    {{topicName}} &nbsp; <button class="upVote">UP ({{upVote}})</button>
+    &nbsp; <button class="downVote">DOWN ({{downVote}})</button>
+    </div>
+</template>

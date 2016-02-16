@@ -67,6 +67,7 @@ html, body{
     font-family: "Open Sans";
     font-size: 16px;
     font-smoothing: antialiased;
+    color: white;
 }
 
 #canvas{
@@ -83,6 +84,10 @@ html, body{
     border-bottom: 2px solid #161e23;
     overflow:hidden;
 
+}
+
+.rank {
+    margin-top:15px;
 }
 /*
 #panLeft{

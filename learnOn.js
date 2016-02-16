@@ -7,18 +7,34 @@ if (Meteor.isClient) {
 
   });
 
+  Template.body.helpers({
+    subjects: function(){
+      return Contents.find();
+    }
+  });
+
+  Template.rank.events({
+    'click .upVote': function(){
+      Contents.update(this._id, {$set: {upVote: this.upVote + 1}});
+    },
+
+    'click .downVote': function(){
+      Contents.update(this._id, {$set: {downVote: this.downVote + 1}});
+    }
+  });
+
   Tracker.autorun(function() {
     /* In order to perform query from server, must wait until db has been connected. Tracker.autorun waits for that to happen */
 
     var contentItem = Contents.find().fetch(); //.find for query; .fetch to get query as array
     if(contentItem.length <= 0) {
-      Contents.insert(({topicName:"Csci40", topicContent:"Test content for this topic", topicVideo:"https://www.youtube.com/embed/PfPdtfbPsRw"}));
-      Contents.insert(({topicName:"Csci41", topicContent:"Test content for this other topic", topicVideo:"https://www.youtube.com/embed/vh3tuL_DVsE"}));
+      //Contents.insert(({topicName:"Csci40", topicContent:"Test content for this topic", topicVideo:"https://www.youtube.com/embed/PfPdtfbPsRw"}));
+      //Contents.insert(({topicName:"Csci41", topicContent:"Test content for this other topic", topicVideo:"https://www.youtube.com/embed/vh3tuL_DVsE"}));
     }
     else{
       for (var i = 0; i < contentItem.length; i++) { //making buttons for each content object. Used for dev until grid is built
         if ( !$( "#"+contentItem[i].topicName ).length ) {
-          $("#panRight").append("<button class='contentButton' id='"+contentItem[i].topicName +"' value='"+contentItem[i]._id._str+"' type='button'>" + contentItem[i].topicName + "</button>");
+          $(".contentButtons").append("<button class='contentButton' id='"+contentItem[i].topicName +"' value='"+contentItem[i]._id._str+"' type='button'>" + contentItem[i].topicName + "</button>");
         }
       }
     }
@@ -37,7 +53,7 @@ if (Meteor.isClient) {
       e.preventDefault(); //prevents button from being clicked multiple times
       if($("#addNewContent").text() == "Add New Content") {
         $("#addNewContent").text("Save");
-        $("#panRight").append("<div style='border:2px solid black' id='addNewTopic'>"
+        $(".contentButtons").append("<div style='border:2px solid black' id='addNewTopic'>"
             + "<form id='usrform'>"
             + "<a style='color:white'>Name:</a> <input type='text' style='width:100%;' id='tName'> <br>"
             + "<a style='color:white'>Content:</a> <input type='text' style='width:100%;' id='tContent'> <br>"
@@ -51,7 +67,7 @@ if (Meteor.isClient) {
         var tContent = $('#tContent').val();
         var tURL = $('#tURL').val();
         if((tName.length > 0) && (tContent.length > 0)) {
-          Contents.insert(({topicName: tName, topicContent: tContent, topicVideo: tURL}));
+          Contents.insert(({topicName: tName, topicContent: tContent, topicVideo: tURL, upVote:0, downVote:0}));
         }
         $("#addNewTopic").remove()
       }
@@ -74,7 +90,8 @@ if(Meteor.isServer) {
 
     //really not sure if this is needed, but scared to take it out. Failsafe to ensure dependencies are met if no object exists
     if (Contents.find().count() == 0) {
-      Contents.insert(({topicName:"Csci40", topicContent:"Test content for this topic", topicVideo:"https://www.youtube.com/embed/PfPdtfbPsRw"}));
+      Contents.insert(({topicName:"Csci40", topicContent:"Test content for this topic", topicVideo:"https://www.youtube.com/embed/PfPdtfbPsRw", upVote:0, downVote:0}));
+      Contents.insert(({topicName:"Csci41", topicContent:"Test content for this other topic", topicVideo:"https://www.youtube.com/embed/vh3tuL_DVsE", upVote:0, downVote:0}));
     }
 
     Meteor.publish("content", function() {
