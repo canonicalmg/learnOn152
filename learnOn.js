@@ -28,8 +28,8 @@ if (Meteor.isClient) {
 
     var contentItem = Contents.find().fetch(); //.find for query; .fetch to get query as array
     if(contentItem.length <= 0) {
-      //Contents.insert(({topicName:"Csci40", topicContent:"Test content for this topic", topicVideo:"https://www.youtube.com/embed/PfPdtfbPsRw"}));
-      //Contents.insert(({topicName:"Csci41", topicContent:"Test content for this other topic", topicVideo:"https://www.youtube.com/embed/vh3tuL_DVsE"}));
+      //Contents.insert(({topicName:"Csci40", topicContent:"Test content for this topic", topicVideo:"https://www.youtube.com/embed/PfPdtfbPsRw", upVote:0, downVote:0}));
+      //Contents.insert(({topicName:"Csci41", topicContent:"Test content for this other topic", topicVideo:"https://www.youtube.com/embed/vh3tuL_DVsE",upVote:0, downVote:0}));
     }
     else{
       for (var i = 0; i < contentItem.length; i++) { //making buttons for each content object. Used for dev until grid is built
@@ -66,6 +66,13 @@ if (Meteor.isClient) {
         var tName = $('#tName').val();
         var tContent = $('#tContent').val();
         var tURL = $('#tURL').val();
+        if (!(tURL.indexOf("/embed/") > -1)){ //if url does not contain "/embed/"
+          if (tURL.indexOf("/watch?") > -1){ //if url is a youtube page
+            var splitURL = tURL.split("/watch?v=");
+            var videoID = splitURL[1];
+            tURL = "https://www.youtube.com/embed/" + videoID;
+          }
+        }
         if((tName.length > 0) && (tContent.length > 0)) {
           Contents.insert(({topicName: tName, topicContent: tContent, topicVideo: tURL, upVote:0, downVote:0}));
         }
