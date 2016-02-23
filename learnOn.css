@@ -89,38 +89,18 @@ html, body{
 .rank {
     margin-top:15px;
 }
-/*
-#panLeft{
-    background-color:orange;
 
+#login-dropdown-list{
+    position:fixed !important;
+    top:10px !important;
+    left:10px !important;
 }
 
-#panRight{
-    background-color:red;
-
+.login-close-text{
+    color:black !important;
+    float:right !important;
 }
 
-#panLeftMedia{
-
-
+#signup-link{
+    color:black !important;
 }
-
-#panLeftContent{
-
-
-}
-
-#panRightMod1{
-
-
-}
-
-#panRightMod2{
-
-
-}
-
-#panRight3{
-
-
-}*/

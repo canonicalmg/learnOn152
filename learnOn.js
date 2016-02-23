@@ -1,6 +1,8 @@
 Contents = new Mongo.Collection("content");
 //Meteor.subscribe('content');
 if (Meteor.isClient) {
+
+
   // counter starts at 0
   //Session.setDefault('counter', 0);
   Meteor.startup(function() {
@@ -24,6 +26,8 @@ if (Meteor.isClient) {
   });
 
   Tracker.autorun(function() {
+
+
     /* In order to perform query from server, must wait until db has been connected. Tracker.autorun waits for that to happen */
 
     var contentItem = Contents.find().fetch(); //.find for query; .fetch to get query as array
@@ -80,7 +84,6 @@ if (Meteor.isClient) {
       }
       //document.getElementById("saveAddNewTopic").addEventListener("click", saveNewTopic);
     });
-
 
 
 
