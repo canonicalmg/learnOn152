@@ -13,6 +13,7 @@
             <ul>
                 <li><a href="#">Home</a></li>
                 <li>{{> loginButtons}}</li>
+                <li><a id='addNewTopic'>Add New Topic</a></li>
                 <li><a id='addNewContent'>Add New Content</a></li>
             </ul>
         </div>
@@ -32,15 +33,18 @@
     </div>
 
     <div id="panRight">
+        <div class="topicButtons">
+            <p>Topic buttons for development</p>
+        </div>
         <div class="contentButtons">
-            <p>Content buttons for development</p> <br> <!--Until grid is built -->
+            <p>Content buttons for development. Corresponding to topic buttons</p> <br> <!--Until grid is built -->
         </div>
         <hr>
-        <div class="contentRanks">
+        <!--<div class="contentRanks">
             {{#each subjects}}
                 {{> rank}}
             {{/each}}
-        </div>
+        </div>-->
     </div>
 
     <div id="footer">
@@ -56,7 +60,8 @@
 
 <template name="rank">
     <div class="rank">
-    {{topicName}} &nbsp; <button class="upVote">UP ({{upVote}})</button>
+        <button class='contentButton' id='{{ contentName }}C' value='{{ contentName }}' type='button'> {{ contentName }}</button> -
+        &nbsp; <button class="upVote">UP ({{upVote}})</button>
     &nbsp; <button class="downVote">DOWN ({{downVote}})</button>
     </div>
 </template>

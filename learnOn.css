@@ -7,6 +7,9 @@
 #addNewContent{
     cursor:pointer;
 }
+#addNewTopic{
+    cursor:pointer;
+}
 
 #navWrap{
     float:right;
