@@ -46,7 +46,69 @@ if (Meteor.isClient) {
     }
   }
 
+  function generateGrid(){
+    $( document ).ready(function() {
+      console.log("doc ready");
+      $("#content-graph").html('');
+      var i,
+          s,
+          nCounter = 0,
+          N = 5,
+          E = 20,
+          g = {
+            nodes: [],
+            edges: []
+          };
+      for (i = 0; i < N; i++) {
+        nCounter++;
+        g.nodes.push({
+          id: 'n' + i,
+          label: 'Node ' + i,
+          x: Math.random(),
+          y: Math.random(),
+          size: 4,
+          color: '#' + Math.random().toString(16).slice(2, 8).toUpperCase()
+        });
+      }
+      for (i = 0; i < E; i++)
+        g.edges.push({
+          id: 'e' + i,
+          source: 'n' + (Math.random() * N | 0),
+          target: 'n' + (Math.random() * N | 0),
+          size: Math.random(),
+          type: 'curve',
+          color: '#ffffff',
+          hover_color: '#000'
+        });
+      s = new sigma({
+        graph: g,
+        renderer: {
+          container: document.getElementById('content-graph'),
+          type: 'canvas'
+        },
+        settings: {
+          doubleClickEnabled: false,
+          minEdgeSize: 0.5,
+          maxEdgeSize: 2,
+          enableEdgeHovering: true,
+          edgeHoverColor: 'edge',
+          defaultEdgeHoverColor: '#000',
+          edgeHoverSizeRatio: 1,
+          edgeHoverExtremities: true,
+        }
+      });
+      // Bind the events:
+      s.bind('clickNode', function(e) {
+        console.log(e.type, e.data.node.label, e.data.captor);
+      });
+      s.bind('clickEdge', function(e) {
+        console.log(e.type, e.data.edge, e.data.captor);
+      });
+  });
+  }
+
   function topicSelect(e){
+    generateGrid();
     function contentButtonClick(k){
       var contentName = this.getAttribute ("value");
       var thisTask = Contents.findOne({contentName: contentName}); //redundant query at the moment, but plan on using a query later to restrict data to only be what is needed
@@ -82,13 +144,9 @@ if (Meteor.isClient) {
     else{
       for (var i = 0; i < contentItem.length; i++) { //making buttons for each content object. Used for dev until grid is built
         if ( !$( "#"+contentItem[i].contentName+"C" ).length ) {
-          console.log("printing object:");
-          console.log(contentItem[i]);
           $(".contentButtons").append("<button class='contentButton' id='"+contentItem[i].contentName +"C' value='"+contentItem[i].contentName+"' type='button'>" + contentItem[i].contentName + "</button>"
           + "&nbsp;<button class='upVote' id='"+contentItem[i]._id +"U' value='"+contentItem[i]._id+"'>UP (" + contentItem[i].upVote+")</button>" //upvote downvote for this content
-          + "&nbsp;<button class='downVote' id='"+contentItem[i]._id +"D' value='"+contentItem[i]._id+"'>DOWN (" + contentItem[i].downVote+")</button>"); //upvote downvote for this content
-          //attach listener to upvote
-          //attach listener to downvote
+          + "&nbsp;<button class='downVote' id='"+contentItem[i]._id +"D' value='"+contentItem[i]._id+"'>DOWN (" + contentItem[i].downVote+")</button></br>"); //upvote downvote for this content
           document.getElementById(contentItem[i]._id +"U").addEventListener ("click", contentUpButtonClick, false);
           document.getElementById(contentItem[i]._id +"D").addEventListener ("click", contentDownButtonClick, false);
           document.getElementById(contentItem[i].contentName +"C").addEventListener ("click", contentButtonClick, false); //attach listener to button
