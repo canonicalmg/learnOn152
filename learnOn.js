@@ -1,26 +1,72 @@
 Topics = new Mongo.Collection("topic");
 Contents = new Mongo.Collection("content");
+Children = new Mongo.Collection("children");
 if (Meteor.isClient) {
 
-  function addTopic(){
+  function addTopic(){ //note 'save' button must be clicked. enter does not work
       console.log("clicked");
       if($("#addNewTopic").text() == "Add New Topic") {
-        $("#addNewTopic").text("Save");
+        $("#addNewTopic").text("Save Topic");
         $(".contentButtons").append("<div style='border:2px solid black' id='addNewTopicForm'>"
             + "<form id='usrform'>"
             + "<a style='color:white'>Name:</a> <input type='text' style='width:100%;' id='tName'> <br>"
+            + "<a style='color:white'>Parent(s):</a> <input type='text' style='width:100%;' id='tParent'> <br>"
             + "</form></div>");
-
       }
-      else if($("#addNewTopic").text() == "Save"){
+      else if($("#addNewTopic").text() == "Save Topic"){
         $("#addNewTopic").text("Add New Topic");
         var tName = $('#tName').val();
 
-        if(tName.length > 0) {
-          Topics.insert(({topicName: tName}));
+        if(!(existenceCheck(tName))) {
+
+          //generate random loc
+          var randomLoc = checkLocation();
+          //If loc does not exist: insert topic into db
+
+          //check if parents exist
+          var parents = $('#tParent').val().split(',');
+          for(var i=0; i  < parents.length; i++){
+            console.log("parent: ", i, parents[i]);
+            if(!(existenceCheck(parents[i]))){
+              alert(parents[i] + " Does not exist");
+            }
+          }
+          Topics.insert(({topicName: tName, locX: randomLoc.X, locY: randomLoc.Y}));
+          for(var i=0; i < parents.length; i++){
+            Children.insert(({Parent: parents[i], Children:tName}))
+          }
         }
-        $("#addNewTopicForm").remove()
+        else{
+          alert("Topic already exists");
+        }
+        $("#addNewTopicForm").remove();
       }
+  }
+
+  function existenceCheck(tName){
+    var existenceCheck = Topics.find({topicName:tName}).fetch();
+    if(existenceCheck.length > 0){
+      //alert("Topic already exists");
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  function checkLocation(){
+    console.log("CheckLocation entered");
+    var randomX = (Math.floor(Math.random() * 1000) + 1  );
+    var randomY = (Math.floor(Math.random() * 1000) + 1  );
+    var locCheck = Topics.find({"locX":randomX, "locY":randomY}).fetch();
+    if(locCheck.length > 0){
+      //If loc exists: generate new loc
+      checkLocation();
+    }
+    else{
+      console.log("returning with new XY", randomX, randomY);
+      return {"X":randomX, "Y": randomY};
+    }
   }
 
   function getTopicButtons(){
@@ -46,31 +92,100 @@ if (Meteor.isClient) {
     }
   }
 
-  function generateGrid(){
+  function generateGrid(tName){
     $( document ).ready(function() {
       console.log("doc ready");
       $("#content-graph").html('');
       var i,
           s,
           nCounter = 0,
-          N = 5,
-          E = 20,
+          N = 10,
+          E = 10,
           g = {
             nodes: [],
             edges: []
           };
-      for (i = 0; i < N; i++) {
+      //take all nodes related to selected node
+      //each node has a label of contentName, and maybe an ID of contentID
+      //consider sticking nodes within some specific columns. Graph space is split int 5 different columns, X,Y random values
+      //    are split into one of these 5 columns
+
+      var existenceCheck = Topics.findOne({topicName:tName});
+      var topicID = existenceCheck._id;
+      g.nodes.push({
+        id:topicID,
+        label: existenceCheck.topicName,
+        x: existenceCheck.locX,
+        y: existenceCheck.locY,
+        size: 10,
+        color: '#' + Math.random().toString(16).slice(2, 8).toUpperCase()
+      });
+      var topicParents = Children.find({Children: tName}).fetch();
+      var thisParent;
+      for(var i=0; i <  topicParents.length; i++){
+        thisParent = Topics.findOne({topicName: topicParents[i].Parent});
+        g.nodes.push({
+          id:thisParent._id,
+          label: thisParent.topicName,
+          x: thisParent.locX,
+          y: thisParent.locY,
+          size: 5,
+          color: '#' + Math.random().toString(16).slice(2, 8).toUpperCase()
+        });
+        g.edges.push({
+          id: "ep" + i,
+          source: thisParent._id,
+          target: topicID,
+          size: '5',
+          type: 'curve',
+          color: '#ffffff',
+          hover_color: '#000'
+        })
+      }
+      var topicChildren = Children.find({Parent: tName}).fetch();
+      var thisChild;
+      for(var i=0; i <  topicChildren.length; i++){
+        thisChild = Topics.findOne({topicName: topicChildren[i].Children});
+        g.nodes.push({
+          id:thisChild._id,
+          label: thisChild.topicName,
+          x: thisChild.locX,
+          y: thisChild.locY,
+          size: 2,
+          color: '#' + Math.random().toString(16).slice(2, 8).toUpperCase()
+        });
+        g.edges.push({
+          id: "ec" + i,
+          source: thisChild._id,
+          target: topicID,
+          size: '2',
+          type: 'curve',
+          color: '#000000',
+          hover_color: '#000'
+        })
+      }
+
+
+
+
+
+      //Display parent of node
+      //Display children of node
+
+      /*for (i = 0; i < N; i++) {
         nCounter++;
+        //console.log("rand # = ", ((Math.random()*100)|15));
+        console.log("rand #2 = ", (Math.floor(Math.random() * 1000) + 1  ));
         g.nodes.push({
           id: 'n' + i,
           label: 'Node ' + i,
-          x: Math.random(),
-          y: Math.random(),
+          x: (Math.floor(Math.random() * 4) + 1  ),
+          y: (Math.floor(Math.random() * 4) + 1  ),
           size: 4,
           color: '#' + Math.random().toString(16).slice(2, 8).toUpperCase()
         });
-      }
-      for (i = 0; i < E; i++)
+      }*/
+      /*for (i = 0; i < E; i++)
         g.edges.push({
           id: 'e' + i,
           source: 'n' + (Math.random() * N | 0),
@@ -79,7 +194,7 @@ if (Meteor.isClient) {
           type: 'curve',
           color: '#ffffff',
           hover_color: '#000'
-        });
+        });*/
       s = new sigma({
         graph: g,
         renderer: {
@@ -108,7 +223,8 @@ if (Meteor.isClient) {
   }
 
   function topicSelect(e){
-    generateGrid();
+    console.log("TOPIC NAME?: ",e.currentTarget.outerText);
+    generateGrid(e.currentTarget.outerText);
     function contentButtonClick(k){
       var contentName = this.getAttribute ("value");
       var thisTask = Contents.findOne({contentName: contentName}); //redundant query at the moment, but plan on using a query later to restrict data to only be what is needed
@@ -157,7 +273,7 @@ if (Meteor.isClient) {
 
   function addContent(){
     if($("#addNewContent").text() == "Add New Content") {
-      $("#addNewContent").text("Save");
+      $("#addNewContent").text("Save Content");
       $(".contentButtons").append("<div style='border:2px solid black' id='addNewContentForm'>"
           + "<form id='usrform'>"
           + "<a style='color:white'>Topic Name:</a> <input type='text' style='width:100%;' id='tName'> <br>" //make this dropdown?
@@ -167,7 +283,7 @@ if (Meteor.isClient) {
           + "</form></div>");
 
     }
-    else if($("#addNewContent").text() == "Save"){
+    else if($("#addNewContent").text() == "Save Content"){
       $("#addNewContent").text("Add New Content");
       var tName = $('#tName').val();
       var cName = $('#cName').val();
@@ -206,6 +322,8 @@ if (Meteor.isClient) {
       Contents.update(this._id, {$set: {downVote: this.downVote + 1}});
     }
   });
+  
+  
 
   Tracker.autorun(function() { //main controller
 
@@ -231,6 +349,18 @@ if (Meteor.isClient) {
       e.preventDefault(); //prevents button from being clicked multiple times
       addContent();
     });
+
+    $("#home").off('click').on('click', function(e){
+      e.preventDefault();
+      getTopicButtons();
+      $("#addNewTopicForm").remove("");
+      $("#addNewTopic").text("Add New Topic");
+      $("#addNewContentForm").remove("");
+      $("#addNewContent").text("Add New Content");
+      $(".contentButtons").remove("");
+      $("#content-graph").remove("");
+      console.log('clicked home');
+    })
   });
 
 
