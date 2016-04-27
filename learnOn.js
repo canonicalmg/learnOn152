@@ -25,12 +25,15 @@ if (Meteor.isClient) {
 
           //check if parents exist
           var parents = $('#tParent').val().split(',');
-          for(var i=0; i  < parents.length; i++){
+          if (parents.length > 0) {
+
+          for (var i = 0; i < parents.length; i++) {
             console.log("parent: ", i, parents[i]);
-            if(!(existenceCheck(parents[i]))){
+            if (!(existenceCheck(parents[i]))) {
               alert(parents[i] + " Does not exist");
             }
           }
+        }
           Topics.insert(({topicName: tName, locX: randomLoc.X, locY: randomLoc.Y}));
           for(var i=0; i < parents.length; i++){
             Children.insert(({Parent: parents[i], Children:tName}))
@@ -118,33 +121,41 @@ if (Meteor.isClient) {
         x: existenceCheck.locX,
         y: existenceCheck.locY,
         size: 10,
-        color: '#' + Math.random().toString(16).slice(2, 8).toUpperCase()
+        color: "#00FF00"
       });
       var topicParents = Children.find({Children: tName}).fetch();
+      console.log(topicParents);
       var thisParent;
       for(var i=0; i <  topicParents.length; i++){
+        console.log("inside topicParent");
         thisParent = Topics.findOne({topicName: topicParents[i].Parent});
-        g.nodes.push({
-          id:thisParent._id,
-          label: thisParent.topicName,
-          x: thisParent.locX,
-          y: thisParent.locY,
-          size: 5,
-          color: '#' + Math.random().toString(16).slice(2, 8).toUpperCase()
-        });
-        g.edges.push({
-          id: "ep" + i,
-          source: thisParent._id,
-          target: topicID,
-          size: '5',
-          type: 'curve',
-          color: '#ffffff',
-          hover_color: '#000'
-        })
+        console.log("thisParent = ", thisParent);
+        if(!(thisParent == null)) {
+          g.nodes.push({
+            id: thisParent._id,
+            label: thisParent.topicName,
+            x: thisParent.locX,
+            y: thisParent.locY,
+            size: 5,
+            color: "#0000FF"
+          });
+          g.edges.push({
+            id: "ep" + i,
+            source: thisParent._id,
+            target: topicID,
+            size: '5',
+            type: 'curve',
+            color: '#ffffff',
+            hover_color: '#000'
+          })
+        }
       }
       var topicChildren = Children.find({Parent: tName}).fetch();
       var thisChild;
+      var topicChildrenChildren;
+      var thisChildChild;
       for(var i=0; i <  topicChildren.length; i++){
+        console.log("finding child:", topicChildren[i]);
         thisChild = Topics.findOne({topicName: topicChildren[i].Children});
         g.nodes.push({
           id:thisChild._id,
@@ -152,7 +163,7 @@ if (Meteor.isClient) {
           x: thisChild.locX,
           y: thisChild.locY,
           size: 2,
-          color: '#' + Math.random().toString(16).slice(2, 8).toUpperCase()
+          color: "#2F329F"
         });
         g.edges.push({
           id: "ec" + i,
@@ -163,7 +174,31 @@ if (Meteor.isClient) {
           color: '#000000',
           hover_color: '#000'
         })
+        topicChildrenChildren = Children.find({Parent: thisChild.topicName}).fetch();
+
+        for(var i=0; i <  topicChildrenChildren.length; i++){
+          thisChildChild = Topics.findOne({topicName: topicChildren[i].Children});
+          g.nodes.push({
+            id:thisChildChild._id + "cc",
+            label: thisChildChild.topicName,
+            x: thisChildChild.locX,
+            y: thisChildChild.locY,
+            size: 1,
+            color: '#' + Math.random().toString(16).slice(2, 8).toUpperCase()
+          });
+          g.edges.push({
+            id: "ecc" + i,
+            source: thisChildChild._id + "cc",
+            target: thisChild._id,
+            size: '1',
+            type: 'curve',
+            color: '#000000',
+            hover_color: '#000'
+          })
+        }
       }
+
+
 
 
 
@@ -378,8 +413,8 @@ if(Meteor.isServer) {
       Contents.insert(({topicName:"Csci41", contentName:"Csci41 Content 1", topicContent:"Test content for this other topic", topicVideo:"https://www.youtube.com/embed/vh3tuL_DVsE", upVote:0, downVote:0}));
     }
     if(Topics.find().count() == 0){
-      Topics.insert(({topicName:"Csci40"}));
-      Topics.insert(({topicName:"Csci41"}));
+      Topics.insert(({topicName:"Csci40", locX: (Math.floor(Math.random() * 1000) + 1  ), locY: (Math.floor(Math.random() * 1000) + 1  )}));
+      Topics.insert(({topicName:"Csci41", locX: (Math.floor(Math.random() * 1000) + 1  ), locY: (Math.floor(Math.random() * 1000) + 1  )}));
     }
 
     Meteor.publish("content", function() {
