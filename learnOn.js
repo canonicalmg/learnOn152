@@ -345,8 +345,8 @@ if (Meteor.isClient) {
     console.log("TOPIC NAME?: ",e.currentTarget.outerText);
     generateGrid(e.currentTarget.outerText);
     function contentButtonClick(k){
-      var contentName = this.getAttribute ("value");
-      var thisTask = Contents.findOne({contentName: contentName}); //redundant query at the moment, but plan on using a query later to restrict data to only be what is needed
+      var contentID = this.getAttribute ("value");
+      var thisTask = Contents.findOne({_id: contentID}); //redundant query at the moment, but plan on using a query later to restrict data to only be what is needed
       if(thisTask.topicVideo) { //if it has a video, display it
         $("#topicVideo").html("<iframe width='100%' height='100%' src='" + thisTask.topicVideo + "' frameborder='0' allowfullscreen></iframe>");
       }
@@ -378,13 +378,13 @@ if (Meteor.isClient) {
     }
     else{
       for (var i = 0; i < contentItem.length; i++) { //making buttons for each content object. Used for dev until grid is built
-        if ( !$( "#"+contentItem[i].contentName+"C" ).length ) {
-          $(".contentButtons").append("<button class='contentButton' id='"+contentItem[i].contentName +"C' value='"+contentItem[i].contentName+"' type='button'>" + contentItem[i].contentName + "</button>"
+        if ( !$( "#"+contentItem[i]._id+"C" ).length ) {
+          $(".contentButtons").append("<button class='contentButton' id='"+contentItem[i]._id +"C' value='"+contentItem[i]._id+"' type='button'>" + contentItem[i].contentName + "</button>"
           + "&nbsp;<button class='upVote' id='"+contentItem[i]._id +"U' value='"+contentItem[i]._id+"'>UP (" + contentItem[i].upVote+")</button>" //upvote downvote for this content
           + "&nbsp;<button class='downVote' id='"+contentItem[i]._id +"D' value='"+contentItem[i]._id+"'>DOWN (" + contentItem[i].downVote+")</button></br>"); //upvote downvote for this content
           document.getElementById(contentItem[i]._id +"U").addEventListener ("click", contentUpButtonClick, false);
           document.getElementById(contentItem[i]._id +"D").addEventListener ("click", contentDownButtonClick, false);
-          document.getElementById(contentItem[i].contentName +"C").addEventListener ("click", contentButtonClick, false); //attach listener to button
+          document.getElementById(contentItem[i]._id +"C").addEventListener ("click", contentButtonClick, false); //attach listener to button
         }
       }
     }
