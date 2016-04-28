@@ -1,6 +1,5 @@
 <head>
   <title>learnOn</title>
-
 </head>
 
 <body>
@@ -49,6 +48,7 @@
         </div>-->
     </div>
 
+
     <div id="footer">
       footer content here
     </div>
@@ -67,4 +67,85 @@
     &nbsp; <button class="downVote">DOWN ({{downVote}})</button>
     </div>
 </template>
+
+<!--     CHAT TEMPLATES   -->
+
+<template name="messages">
+    <div class="message-history">
+        {{#if Template.subscriptionsReady}}
+            {{#each messages}}
+                {{> message text=text timestamp=timestamp user=user }}
+            {{/each}}
+        {{else}}
+            Loading…
+        {{/if}}
+    </div>
+</template>
+
+<template name="message">
+    <div class="message">
+        <a href="" class="message_profile-pic"></a>
+        <a href="" class="message_username">{{usernameFromId user}}</a>
+        <span class="message_timestamp">{{timestampToTime timestamp}}</span>
+        <span class="message_star"></span>
+        <span class="message_content">{{text}}</span>
+    </div>
+</template>
+
+<template name="listings">
+    <div class="listings">
+        <div class="listings_channels">
+            <h2 class="listings_header">Channels</h2>
+            <ul class="channel_list">
+                {{#each channels}}
+                    {{> channel name=name}}
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+</template>
+
+<template name="header">
+    <div class="header">
+        <div class="channel-menu">
+			<span class="channel-menu_name">
+				<span class="channel-menu_prefix">Speak On </span>
+                {{currentChannel}}
+			</span>
+        </div>
+    </div>
+</template>
+
+<template name="footer">
+    <div class="footer">
+        <div class="input-box">
+            <input type="text" class="input-box_text">
+        </div>
+    </div>
+</template>
+
+<template name="channel">
+    <li class="channel {{active}}">
+        <a class="channel_name" href="/{{name}}">
+			<span>
+				<span class="prefix">-</span>
+				<span class="channel-name">{{name}}</span>
+			</span>
+        </a>
+    </li>
+</template>
+
+<template name="app">
+    {{> header}}
+    <div class="main">
+        {{> listings}}
+        {{> yield}}
+    </div>
+    {{> footer}}
+</template>
+
+<!-- End of chat templates -->
+
+
+
 

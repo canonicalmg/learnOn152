@@ -1,7 +1,91 @@
 Topics = new Mongo.Collection("topic");
 Contents = new Mongo.Collection("content");
 Children = new Mongo.Collection("children");
+Messages = new Mongo.Collection("messages");
+Channels = new Mongo.Collection("channels");
+
+
+
+
 if (Meteor.isClient) {
+
+  //CHAT PART
+  Template.messages.helpers({
+    messages: Messages.find({})
+  });
+
+
+  Template.registerHelper('currentChannel', function () {
+    return Session.get('channel');
+  });
+
+  Template.registerHelper("timestampToTime", function (timestamp) {
+    var date = new Date(timestamp);
+    var hours = date.getHours();
+    var minutes = "0" + date.getMinutes();
+    var seconds = "0" + date.getSeconds();
+    return hours + ':' + minutes.substr(minutes.length-2) + ':' + seconds.substr(seconds.length-2);
+  });
+
+  Template.registerHelper("usernameFromId", function (userId) {
+    var user = Meteor.users.findOne({_id: userId});
+    if (typeof user === "undefined") {
+      return "Anonymous";
+    }
+   else
+    return user.username;
+  });
+
+  Template.listings.helpers({
+    channels: function () {
+      return Channels.find();
+    }
+  });
+
+  Template.channel.helpers({
+    active: function () {
+      if (Session.get('channel') === this.name) {
+        return "active";
+      } else {
+        return "";
+      }
+    }
+  });
+
+  Template.footer.events({
+    'keypress input': function(e) {
+      var inputVal = $('.input-box_text').val();
+      if(!!inputVal) {
+        var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
+        if (charCode == 13) {
+          e.stopPropagation();
+          Meteor.call('newMessage', {
+            text: $('.input-box_text').val(),
+            channel: Session.get('channel')
+          });
+          $('.input-box_text').val("");
+          return false;
+        }
+      }
+    }
+  });
+
+  Router.configure({
+    layoutTemplate: 'app'
+  });
+
+  Router.route('/:channel', function () {
+    Session.set('channel', this.params.channel);
+    this.render('messages');
+  });
+
+  Router.route('/', function () {
+    this.redirect('/general');
+  });
+
+  //END CHAT PART
+
+
 
   function addTopic(){ //note 'save' button must be clicked. enter does not work
       console.log("clicked");
@@ -340,6 +424,34 @@ if (Meteor.isClient) {
 
   Meteor.startup(function() {
 
+    //CHAT STARTUP
+
+
+    Meteor.subscribe('channels');
+    Meteor.subscribe('allUsernames');
+
+    Template.messages.onCreated(function() {
+      var self = this;
+      self.autorun(function() {
+        self.subscribe('messages', Session.get('channel'), function () {
+          self.autorun(function() {
+            Messages.find({channel: Session.get('channel')}).count();
+            Meteor.setTimeout(function () {
+              $('.message-history').scrollTop(Number.MAX_VALUE);
+            }, 100);
+          });
+        });
+      });
+    });
+
+
+
+    //END CHAT START UP
+
+
+
+
+
   });
 
   Template.body.helpers({
@@ -406,6 +518,43 @@ Accounts.ui.config({
 }
 
 if(Meteor.isServer) {
+
+  //CHAT APP
+
+  Meteor.methods({
+    newMessage: function (message) {
+      message.timestamp = Date.now();
+      message.user = Meteor.userId();
+      Messages.insert(message);
+    }
+  })
+
+
+  Meteor.publish('messages', function (channel) {
+    return Messages.find({channel: channel});
+  });
+
+  Meteor.publish('channels', function () {
+    return Channels.find();
+  });
+
+  Meteor.publish("allUsernames", function () {
+    return Meteor.users.find({}, {fields: {
+      "username": 1,
+      "services.github.username": 1
+    }});
+  });
+
+
+
+
+
+  //END CHAT APP
+
+
+
+
+
   Meteor.startup(function () {
     if (Contents.find().count() == 0) {
       Contents.insert(({topicName:"Csci40", contentName:"Csci40 Content 1", topicContent:"Test content for this topic", topicVideo:"https://www.youtube.com/embed/PfPdtfbPsRw", upVote:0, downVote:0}));

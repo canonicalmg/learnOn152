@@ -113,3 +113,212 @@ html, body{
     width:70vh;
     float:left;
 }
+
+
+
+
+
+
+
+
+/*CHAT PART*/
+
+
+.channel {
+    height: 24px;
+    line-height: 24px;
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    margin-right: 17px;
+    color: #ffffff;
+    padding-left: 1rem;
+}
+
+.channel.active {
+    background: #4c9689;
+}
+
+.channel_prefix {
+    color: #555459;
+}
+
+.message {
+    position: relative;
+    margin-top: .5rem;
+    padding: .25rem 2rem .1rem 3rem;
+    min-height: 36px;
+}
+
+.message_profile-pic {
+    position: absolute;
+    left: 0;
+    display: block;
+    border-radius: 0.2rem;
+    width: 36px;
+    height: 36px;
+    background-image: url("http://www.lovemarks.com/wp-content/uploads/profile-avatars/default-avatar-business-bear.png");
+    background-size: cover;
+}
+
+.message_username {
+    font-weight: 900;
+    padding-right: .25rem;
+    color: #4c9689 !important;
+    margin-left: 0;
+    font-style: normal;
+    text-decoration: none;
+}
+
+.message_timestamp {
+    text-align: left;
+    display: inline;
+    position: relative;
+    top: 0;
+    left: 0;
+    color: #babbbf;
+    font-size: 12px;
+    line-height: 1.2rem;
+    width: 36px;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+
+.channel-menu_prefix {
+    color: #555459;
+    padding-right: .1rem;
+    font-weight: 500;
+}
+
+.listings {
+    height: 100%;
+    width: 10vw;
+    float: right;
+    color: #555459;
+    background-color: #2a3843;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.message-history {
+    float:right;
+    margin-left: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 0 18px 1rem 1.5rem;
+}
+
+.listings_channels {
+    margin: 1rem 0 2rem;
+}
+
+.listings_header {
+    text-align: left;
+    font-size: .8rem;
+    line-height: 1.25rem;
+    margin: 0 1rem .1rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #ffffff;
+    width: 165px;
+    position: relative;
+}
+
+.channel_list {
+    list-style-type: none;
+    text-align: left;
+    color: #555459;
+}
+
+.user-menu {
+    float: left;
+    width: 220px;
+    height: 100%;
+    cursor: pointer;
+    background: #555459;
+    border-top: 2px solid #555459;
+    padding: 7px 0 9px 8px;
+    height: 4rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+
+.user-menu_profile-pic {
+    display: inline-block;
+    float: left;
+    border-radius: 0.2rem;
+    width: 48px;
+    height: 48px;
+    background-image: url("http://i.imgur.com/LikUNLc.png");
+    background-size: cover;
+    margin-right: 8px;
+}
+
+.input-box {
+    float:right;
+    height: 100%;
+    margin-left: 400px;
+}
+.input-box_text {
+    font-size: .95rem;
+    width: 30vw;
+    line-height: 1.2rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 0.2rem;
+    background-clip: padding-box;
+    color: #3d3c40;
+    box-shadow: none;
+    outline: 0;
+    bottom: 0;
+    min-height: 21px !important;
+}
+.channel_name {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+
+
+.message_content {
+    color: #8b898f;
+    font-style: italic;
+    display: block;
+    min-height: 1rem;
+}
+.user-menu_username {
+    display: block;
+    color: #ffffff;
+    font-weight: 900;
+    line-height: 1.5rem;
+    margin-top: .2rem;
+    max-width: 120px;
+}
+.team-menu {
+    position: relative;
+    width: 220px;
+    height: 53px;
+    line-height: 53px;
+    font-weight: 900;
+    padding: 0 1rem;
+    color: #ffffff;
+    background: #3e313c;
+    border-bottom: 2px solid #372c36;
+    float: left;
+    cursor: pointer;
+}
+
+.channel-menu_name {
+    display: inline-block;
+    padding: 0 .5rem 0 1.5rem;
+    color: #555459;
+    font-size: 1.4rem;
+    font-weight: 900;
+    line-height: 53px;
+    cursor: pointer;
+    margin-left:1000px;
+
+}
