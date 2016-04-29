@@ -6,7 +6,7 @@ Channels = new Mongo.Collection("channels");
 
 
 
-
+//Commit Testing - Leng
 if (Meteor.isClient) {
 
   //CHAT PART
