@@ -91,11 +91,21 @@ if (Meteor.isClient) {
       console.log("clicked");
       if($("#addNewTopic").text() == "Add New Topic") {
         $("#addNewTopic").text("Save Topic");
+        var topList = [];
+        var topicItem = Topics.find().fetch();
+        var tsize = Topics.find().count();
+        for(var i = 0; i<tsize; i++)
+        {
+            topList.push(topicItem[i].topicName);
+        }
         $(".contentButtons").append("<div style='border:2px solid black' id='addNewTopicForm'>"
             + "<form id='usrform'>"
             + "<a style='color:white'>Name:</a> <input type='text' style='width:100%;' id='tName'> <br>"
-            + "<a style='color:white'>Parent(s):</a> <input type='text' style='width:100%;' id='tParent'> <br>"
-            + "</form></div>");
+            + "<a style='color:white'>Parent(s):</a>"//<input type='text' style='width:100%;' id='tParent'> <br>"
+            + "<input class='awesomplete' id='tParent' data-list='"+topList+"'>"//Ada, Java, JavaScript, Brainfuck, LOLCODE, Node.js, Ruby on Rails' />"//"<input class='awesomplete' type='text' id='id'myinput' data-list= '"+ topList +"'/>"
+            + "<script type='text/javascript' src='http://cdn.rawgit.com/LeaVerou/awesomplete/gh-pages/awesomplete.min.js'></script>"
+            + "<script type='text/javascript'></script>"
+            +"</form></div>");
       }
       else if($("#addNewTopic").text() == "Save Topic"){
         $("#addNewTopic").text("Add New Topic");
